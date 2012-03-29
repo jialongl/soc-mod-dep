@@ -1,6 +1,9 @@
 ;; "tn" short for "taken"
 ;; "ct" short for "can-take"
+;; "cnt" short for "cannot-take"
 ;; "co-read" treated as "take"
+
+; rules for prerequisites ;
 
 (defrule rule-1 (tn CS3212) => (assert (ct CS5219)))
 (defrule rule-2 (and (or (tn CS2010) (tn CS2020)) (tn MA1101R) (tn MA1521) (tn CS3241)) => (assert (ct CS5343)))
@@ -8,7 +11,6 @@
 (defrule rule-4 (tn CS4243) => (assert (ct CS5341)))
 (defrule rule-5 (tn CS3223) => (assert (ct CS5322)))
 (defrule rule-6 (and (tn CS1020) (tn CS1231) (or (tn MA1102R) (tn MA1505) (tn MA1521)) (or (tn MA1101R) (tn MA1506))) => (assert (ct CS5241)))
-
 (defrule rule-7 (tn CS1020) => (assert (ct CS5239)))
 (defrule rule-8 (and (tn CS1231) (tn CS3230)) => (assert (ct CS5237)))
 (defrule rule-9 (and (tn CS1020) (or (tn MA1102R) (tn MA1505) (tn MA1505C) (tn MA1521)) (or (tn MA1101R) (tn MA1506)) (or (tn ST1232) (tn ST2131) (tn ST2334))) => (assert (ct CS5233)))
@@ -18,9 +20,9 @@
 (defrule rule-13 (and (tn CS3223) (tn CS4221)) => (assert (ct CS5226)))
 (defrule rule-14 (and (tn CS2106) (or (tn CS3220) (tn CS4223))) => (assert (ct CS5222)))
 (defrule rule-15 (or (tn CS3212) (tn CS4212)) => (assert (ct CS5214)))
-
-;(defrule rule-16 (Students in their 3rd year of study in science, technology or business) => (assert (ct CS4880))) ; interesting
-
+(defrule rule-16
+  ?MCs <- (num-MCs)
+  (> ?MCs 80) => (assert (ct CS4880)))
 (defrule rule-17 (and (or (tn CS3248) (tn CS4213)) (cs4349-department-approval)) => (assert (ct CS4349)))
 (defrule rule-18 (and (tn CS3343) (or (tn CS4243) (tn CS4247) (tn CS4342))) => (assert (ct CS4340)))
 (defrule rule-19 (and (or (tn CG2271) (tn CS2271)) (or (tn CS3215) (tn CS3202))) => (assert (ct CS4273)))
@@ -41,15 +43,12 @@
 (defrule rule-34 (and (tn CS2010) (tn CS2104)) => (assert (ct CS4215)))
 (defrule rule-35 (tn CS4203) => (assert (ct CS4204)))
 (defrule rule-36 (tn CS4201) => (assert (ct CS4202)))
-
-(defrule rule-37 (Read and passed 80 MCs of modules. Students from Engineering, Science, and FASS with sufficient computing background and have read and passed 80 MCs of module may also apply to read. Student selection process will be enforced.) => (assert (ct CS3882)))
-
-
+(defrule rule-37
+  ?MCs <- (num-MCs)
+  (> ?MCs 80) => (assert (ct CS3882)))
 (defrule rule-38 (or (and (soc-student) (tn CS1020)) (and (cnm-student) (tn NM2208))) => (assert (ct CS3343)))
-
-; (defrule rule-39 ((tn CS3281) and have passed at least two primary modules in a CS focus area. Student selection process will be enforced.) => (assert (ct CS3282)))
-; (defrule rule-40 ((tn CS2103) and have passed at least one primary module in a CS focus area. Student selection process will be enforced.) => (assert (ct CS3281)))
-
+(defrule rule-39 (tn CS3281) => (assert (ct CS3282)))
+(defrule rule-40 (tn CS2103) => (assert (ct CS3281)))
 (defrule rule-41 (or (tn CG2271) (tn CS2271)) => (assert (ct CS3271)))
 (defrule rule-42 (tn CS1020) => (assert (ct CS3249)))
 (defrule rule-43 (or (and (soc-student) (tn CS3240) (tn CS3249)) (and (cnm-student) (tn NM2217))) => (assert (ct CS3248)))
@@ -59,7 +58,7 @@
 (defrule rule-47 (and (tn CS2010) (or (tn CS1231) (tn MA1100))) => (assert (ct CS3243)))
 (defrule rule-48 (tn CS1020) => (assert (ct CS3241)))
 (defrule rule-49 (or (tn CS1231) (tn MA1100)) => (assert (ct CS3234)))
-(defrule rule-50 (or (grade-of CS2010 "A") (grade-of CS2010 "A+") (grade-of CS2010 "A-") (cs3233-special-permission)) => (assert (ct CS3233)))
+(defrule rule-50 (or (ace CS2010) (cs3233-special-permission)) => (assert (ct CS3233)))
 (defrule rule-51 (or (take CS3230) (tn CS3230)) => (assert (ct CS3230R)))
 (defrule rule-52 (and (tn CS2010) (or (tn CS1231) (tn MA1100))) => (assert (ct CS3230)))
 (defrule rule-53 (and (tn CS2010) (or (tn CS2220) (tn LSM2104))) => (assert (ct CS3225)))
@@ -88,13 +87,45 @@
 (defrule rule-76 (and (tn CS1020) (or (tn CS1231) (tn MA1100))) => (assert (ct CS2102)))
 (defrule rule-77 (or (pass-QET) (tn ES1000) (tn ES1102)) => (assert (ct CS2101)))
 (defrule rule-78 (tn CS1010) => (assert (ct CS2100)))
-
-; (defrule rule-79 (Obtain a grade of at least A- in either CS1010 or CS1101S Programming Methodology) => (assert (ct CS2020)))
-
+(defrule rule-79 (or (ace CS1010) (ace CS1101S)) => (assert (ct CS2020)))
 (defrule rule-80 (or (tn CS1020) (tn CS1020E) (tn CG1103)) => (assert (ct CS2010)))
 (defrule rule-81 (or (a-level-math) (h2-math) (tn MA1301)) => (assert (ct CS1231)))
 (defrule rule-82 (tn CS1010E) => (assert (ct CS1020E)))
 (defrule rule-83 (tn CS1010) => (assert (ct CS1020)))
+
+
+; rules for preclusions ;
+
+(defrule rule-101
+  ?f <- (ct CS1010)
+  (tn CS1010E)
+  =>
+  (retract ?f)
+  (assert (cnt CS1010)))
+
+(defrule rule-102
+  ?f <- (ct CS1010E)
+  (tn CS1010)
+  =>
+  (retract ?f)
+  (assert (cnt CS1010E)))
+
+(defrule rule-103
+  ?f <- (ct MA1100)
+  (tn CS1231)
+  =>
+  (retract ?f)
+  (assert (cnt MA1100)))
+
+(defrule rule-104
+  ?f <- (ct CS1231)
+  (tn MA1100)
+  =>
+  (retract ?f)
+  (assert (cnt CS1231)))
+
+
+; *le rule of thumb ;
 
 (defrule rule-pass-module
   (and (ct ?m) (take ?m))
@@ -102,11 +133,59 @@
   ?ctm <- (ct ?m)
   =>
   (assert (tn ?m))
-  (retract ?takem)
-  (retract ?ctm))
+  (retract ?takem ?ctm))
 
-(deffacts initial-modules-can-take (ct CS1010) (ct CS1010E))
-(deffacts initial-modules-to-take  (take CS1010))
+;;;;;; END of rules ;;;;;;
 
-(reset)
-(run)
+
+(deffunction str-equal? (?s1 ?s2)
+  (return (= 0 (str-compare ?s1 ?s2))))
+
+(deffunction ask-yes-or-no (?question)
+   (printout t ?question " (yes or no) ")
+   (bind ?answer (read))
+   (while (and (neq ?answer yes) (neq ?answer no))
+      (printout t ?question " (yes or no) ")
+      (bind ?answer (read)))
+   (return (str-equal? "yes" ?answer)))
+
+(deffunction ace-module (?m)
+  (assert (ace ?m)))
+
+(deffunction num-facts-of-template (?template)
+  (length (find-all-facts ((?f ?template)) TRUE)))
+
+(deffunction num-modules-taken ()
+  (num-facts-of-template tn))
+
+(deffunction num-MCs ()
+  ; number of M(odular) C(redit)s
+  ; simply treat every module 4MCs...
+  (* 4 (num-modules-taken)))
+
+(deffunction take-module (?m)
+  ; if all prerequisites of ?m has been taken, return true;
+  ; elif (taken subset of the prerequisites) print the missing prerequisites, return false;
+  ; else print impossible (probably taken a preclusion, or the module is an isolated node), return false.
+
+  (if (any-factp ((?f ct)) (eq ?m (nth 1 ?f:implied)))
+      then
+      (progn (assert (take ?m))
+             (if (ask-yes-or-no (str-cat "Take " ?m " successfully. (run)?"))
+				 then
+				 (run)))
+
+      else
+      (if (any-factp ((?f cnt)) (eq ?m (nth 1 ?f:implied)))
+		  then
+          (printout "You can't take " ?m " because you have taken its preclusion"))))
+
+;; run the system
+(deffacts init
+  (soc-student)
+  (ct CS1010) (ct CS1010E) (ct CS1231) (ct MA1100))
+
+; example commands after loading this file:
+; (reset)
+; (take-module CS1010)
+; (take-module CS2100)
