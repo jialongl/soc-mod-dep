@@ -20,9 +20,7 @@
 (defrule rule-13 (and (tn CS3223) (tn CS4221)) => (assert (ct CS5226)))
 (defrule rule-14 (and (tn CS2106) (or (tn CS3220) (tn CS4223))) => (assert (ct CS5222)))
 (defrule rule-15 (or (tn CS3212) (tn CS4212)) => (assert (ct CS5214)))
-(defrule rule-16
-  ?MCs <- (num-MCs)
-  (> ?MCs 80) => (assert (ct CS4880)))
+(defrule rule-16 (test (> (num-MCs) 15)) => (assert (ct CS4880))) ; correct value was 80MCs. Changed for demo purpose.
 (defrule rule-17 (and (or (tn CS3248) (tn CS4213)) (cs4349-department-approval)) => (assert (ct CS4349)))
 (defrule rule-18 (and (tn CS3343) (or (tn CS4243) (tn CS4247) (tn CS4342))) => (assert (ct CS4340)))
 (defrule rule-19 (and (or (tn CG2271) (tn CS2271)) (or (tn CS3215) (tn CS3202))) => (assert (ct CS4273)))
@@ -43,9 +41,7 @@
 (defrule rule-34 (and (tn CS2010) (tn CS2104)) => (assert (ct CS4215)))
 (defrule rule-35 (tn CS4203) => (assert (ct CS4204)))
 (defrule rule-36 (tn CS4201) => (assert (ct CS4202)))
-(defrule rule-37
-  ?MCs <- (num-MCs)
-  (> ?MCs 80) => (assert (ct CS3882)))
+(defrule rule-37 (test (> (num-MCs) 25)) => (assert (ct CS3882))) ; correct value was 80MCs. Changed for demo purpose.
 (defrule rule-38 (or (and (soc-student) (tn CS1020)) (and (cnm-student) (tn NM2208))) => (assert (ct CS3343)))
 (defrule rule-39 (tn CS3281) => (assert (ct CS3282)))
 (defrule rule-40 (tn CS2103) => (assert (ct CS3281)))
