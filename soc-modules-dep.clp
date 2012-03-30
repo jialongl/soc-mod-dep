@@ -97,28 +97,28 @@
   (tn CS1010E)
   =>
   (retract ?f)
-  (assert (cnt CS1010)))
+  (assert (cnt CS1010 cuz CS1010E)))
 
 (defrule rule-102
   ?f <- (ct CS1010E)
   (tn CS1010)
   =>
   (retract ?f)
-  (assert (cnt CS1010E)))
+  (assert (cnt CS1010E cuz CS1010)))
 
 (defrule rule-103
   ?f <- (ct MA1100)
   (tn CS1231)
   =>
   (retract ?f)
-  (assert (cnt MA1100)))
+  (assert (cnt MA1100 cuz CS1231)))
 
 (defrule rule-104
   ?f <- (ct CS1231)
   (tn MA1100)
   =>
   (retract ?f)
-  (assert (cnt CS1231)))
+  (assert (cnt CS1231 cuz MA1100)))
 
 
 ; *le rule of thumb ;
@@ -172,9 +172,10 @@
 				 (run)))
 
       else
-      (if (any-factp ((?f cnt)) (eq ?m (nth 1 ?f:implied)))
-		  then
-          (printout "You can't take " ?m " because you have taken its preclusion"))))
+      (bind ?facts (find-fact ((?f cnt)) (eq ?m (nth 1 ?f:implied))))
+      (if (> (length ?facts) 0)
+          then
+          (printout t "You can't take " ?m " because you have taken its preclusion " (nth 3 (fact-slot-value (nth 1 ?facts) implied)) crlf))))
 
 ;; run the system
 (deffacts init
