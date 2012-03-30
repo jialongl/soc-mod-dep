@@ -3,6 +3,9 @@
 ;; "cnt" short for "cannot-take"
 ;; "co-read" treated as "take"
 
+; function forward declarations for rule 16 and 37
+(deffunction num-MCs () 10101)
+
 ; rules for prerequisites ;
 
 (defrule rule-1 (tn CS3212) => (assert (ct CS5219)))
@@ -134,6 +137,83 @@
 ;;;;;; END of rules ;;;;;;
 
 
+; Backward Chaining Inference Engine ;
+
+(deftemplate rule
+  ; add prefix "bcr" (backward chaining rule) to distinguish from the built-in special form "if"
+  (multislot bcr-if)
+  (multislot bcr-then))
+
+(defrule attempt-rule
+  ; if ?mod has ?prereq to meet, and ?prereq hasn't been taken + not set as a (intermidiate) goal,
+  ; then set it as a goal in BC.
+
+  (goal ?mod)
+  ?rule <- (rule (bcr-if tn ?prereq $?clause) (bcr-then ct ?mod))
+  (not (goal ?prereq))
+  =>
+  (assert (goal ?prereq))
+  (if (eq (nth 1 $?clause) and)
+      then
+      (modify ?rule (bcr-if (rest$ $?clause)))))
+
+(defrule goal-satisfied
+  ; delete ?mod (goal) if it has been taken.
+  ; so we know the missing prerequisites when BC ends -- by checking the existing goals.
+
+  ?goal <- (goal ?mod)
+  (tn ?mod)
+  =>
+  (retract ?goal))
+
+(defrule prereq-satisfied
+  ; delete ?mod (subgoal) if its (sole) prerequisite has been taken.
+
+  (goal ?mod)
+  (tn ?prereq)
+  ?rule <- (rule (bcr-if tn ?prereq) (bcr-then ct ?mod))
+  =>
+  (assert (ct ?mod)))
+
+(defrule rule-partially-satisfied-1
+  (goal ?mod)
+  (tn ?prereq)
+  ?rule <- (rule (bcr-if tn ?prereq and $?clause) (bcr-then ct ?mod))
+  =>
+  (modify ?rule (bcr-if $?clause)))
+
+(defrule rule-partially-satisfied-2
+  (goal ?mod)
+  (tn ?prereq)
+  ?rule <- (rule (bcr-if $?clause and tn ?prereq) (bcr-then ct ?mod))
+  =>
+  (modify ?rule (bcr-if $?clause)))
+
+(defrule rule-partially-satisfied-3
+  (goal ?mod)
+  (tn ?prereq)
+  ?rule <- (rule (bcr-if $?clause1 and tn ?prereq and $?clause2) (bcr-then ct ?mod))
+  =>
+  (modify ?rule (bcr-if $?clause1 and $?clause2)))
+
+(deffunction init-bc-rules ()
+  ; translated some simple rules for backward chaining (just for) demo...
+  ; improve the BC engine to support "or" and add rules (actually facts) with "or" here.
+  (assert
+   (rule (bcr-if tn CS3212) (bcr-then ct CS5219))
+   (rule (bcr-if tn CS4341) (bcr-then ct CS5342))
+   (rule (bcr-if tn CS4243) (bcr-then ct CS5341))
+   (rule (bcr-if tn CS3223) (bcr-then ct CS5322))
+   (rule (bcr-if tn CS1020) (bcr-then ct CS5239))
+   (rule (bcr-if tn CS1231 and tn CS3230) (bcr-then ct CS5237))
+   (rule (bcr-if tn CS1231 and tn CS2105 and tn CS2106) (bcr-then ct CS5231))
+   (rule (bcr-if tn CS3231) (bcr-then ct CS5230))
+   (rule (bcr-if tn CS3223 and tn CS4221) (bcr-then ct CS5226))
+   ))
+
+;;;;;; END of BC Engine ;;;;;;
+
+
 (deffunction str-equal? (?s1 ?s2)
   (return (= 0 (str-compare ?s1 ?s2))))
 
@@ -168,14 +248,27 @@
       then
       (progn (assert (take ?m))
              (if (ask-yes-or-no (str-cat "Take " ?m " successfully. (run)?"))
-				 then
-				 (run)))
+                 then
+                 (run)))
 
       else
       (bind ?facts (find-fact ((?f cnt)) (eq ?m (nth 1 ?f:implied))))
       (if (> (length ?facts) 0)
           then
-          (printout t "You can't take " ?m " because you have taken its preclusion " (nth 3 (fact-slot-value (nth 1 ?facts) implied)) crlf))))
+          (printout t "You can't take " ?m " because you have taken its preclusion "
+                    (nth 3 (fact-slot-value (nth 1 ?facts) implied)) crlf)
+
+          else                          ; no preclusions found. probably missing prerequisites.
+          (progn (bind ?tmp (assert (goal ?m)))
+                 (init-bc-rules)
+                 (run)
+                 (retract ?tmp)
+                 (printout t "Missing prerequisites: ")
+                 (do-for-all-facts ((?f goal)) TRUE
+                                   (progn (printout t (fact-slot-value ?f implied))
+                                          (retract ?f)))
+                 (do-for-all-facts ((?f rule)) TRUE (retract ?f))
+))))
 
 ;; run the system
 (deffacts init
