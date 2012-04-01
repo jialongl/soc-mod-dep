@@ -13,11 +13,13 @@ You can download install CLIPS at http://clipsrules.sourceforge.net/
 (for Linux users: it should be in the package repository of your distribution).
 
 The fundamental question it tries to answer is "Can I  take module X?"  If all the prerequisites of X are met,
-the answer will be ``yes''.  The user can virtually take the course by typing commands, which is necessary for
+the answer will be ``yes''.  The user can virtually take the course by typing command "(take-module X)". It is necessary to do so for
 futher queries.  Otherwise, the  system informs the user what prerequisites are  missing, or simply impossible
 for the user to take the module (probably because he/she has taken a precluded module).
 
-Note that this program currently only deals with SoC modules.
+Note that this program currently only deals with SoC modules. Besides, only a small portion of the modules
+are backward chaining compatible -- it means you can be informed of missing prerequisites of only a few modules.
+Search string "init-bc-rules" in "soc-modules-dep.clp" for more details.
 
 The system starts up assuming  you are a freshman -- it has no knowledge of  what modules you have taken. Here
 is a sequence of commands for example:
