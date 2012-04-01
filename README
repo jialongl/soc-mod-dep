@@ -1,0 +1,57 @@
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+Welcome to SoC module resolver.  It is a CLIPS program (prototype) I did for an assignment.
+You can download install CLIPS at http://clipsrules.sourceforge.net/
+(for Linux users: it should be in the package repository of your distribution).
+
+The fundamental question it tries to answer is "Can I  take module X?"  If all the prerequisites of X are met,
+the answer will be ``yes''.  The user can virtually take the course by typing commands, which is necessary for
+futher queries.  Otherwise, the  system informs the user what prerequisites are  missing, or simply impossible
+for the user to take the module (probably because he/she has taken a precluded module).
+
+Note that this program currently only deals with SoC modules.
+
+The system starts up assuming  you are a freshman -- it has no knowledge of  what modules you have taken. Here
+is a sequence of commands for example:
+
+$ clips
+CLIPS> (load "soc-modules-dep.clp")
+........
+TRUE
+CLIPS> (reset)
+CLIPS> (take-module CS1231)
+Take CS1231 successfully. (run)?  yes
+CLIPS> (take-module MA1100)
+You can't take MA1100 because you have taken its preclusion CS1231
+CLIPS> (take-module CS5231)
+Missing prerequisites: (CS2105) (CS2106)
+CLIPS> (take-module CS2105)
+Missing prerequisites:
+CLIPS> (take-module CS1010)
+Take CS1010 successfully. (run)?  yes
+CLIPS> (take-module CS1020)
+Take CS1020 successfully. (run)?  yes
+CLIPS> (take-module CS2100)
+Take CS2100 successfully. (run)?  yes
+CLIPS> (take-module CS2105)
+Take CS2105 successfully. (run)?  yes
+CLIPS> (take-module CS5231)
+Missing prerequisites: (CS2106)
+CLIPS> (take-module CS2106)
+Take CS2106 successfully. (run)?  yes
+CLIPS> (take-module CS5231)
+Take CS5231 successfully. (run)? (yes or no) yes
+CLIPS> (exit)
+$
+
+Acknowledgement:
+The module information  was grepped from http://api.nushackers.org/modules/search/CS in JSON.
+Great thanks to NUS Hackers. ;)
